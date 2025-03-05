@@ -17,11 +17,8 @@ interface TimePickerProps {
 }
 
 export function TimePicker({ date, setDate, className }: TimePickerProps) {
-  const [selectedHour, setSelectedHour] = React.useState<number>(date ? date.getHours() % 12 || 12 : 12)
+  const [selectedHour, setSelectedHour] = React.useState<number>(date ? date.getHours() : 0)
   const [selectedMinute, setSelectedMinute] = React.useState<number>(date ? date.getMinutes() : 0)
-  const [selectedPeriod, setSelectedPeriod] = React.useState<"AM" | "PM">(
-    date ? (date.getHours() >= 12 ? "PM" : "AM") : "AM",
-  )
   const [open, setOpen] = React.useState(false)
 
   // Track initialization
@@ -30,14 +27,8 @@ export function TimePicker({ date, setDate, className }: TimePickerProps) {
   // Initialize time values from date when date changes
   React.useEffect(() => {
     if (date && !isInitialized.current) {
-      const hours = date.getHours()
-      const period = hours >= 12 ? "PM" : "AM"
-      const hour12 = hours % 12 || 12
-
-      setSelectedHour(hour12)
+      setSelectedHour(date.getHours())
       setSelectedMinute(date.getMinutes())
-      setSelectedPeriod(period)
-
       isInitialized.current = true
     }
   }, [date])
@@ -49,18 +40,14 @@ export function TimePicker({ date, setDate, className }: TimePickerProps) {
     }
 
     const newDate = new Date(date)
-    let hours = selectedHour
-    if (selectedPeriod === "PM" && hours !== 12) hours += 12
-    if (selectedPeriod === "AM" && hours === 12) hours = 0
-
     // Only update if the time actually changed
-    if (newDate.getHours() !== hours || newDate.getMinutes() !== selectedMinute) {
-      newDate.setHours(hours)
+    if (newDate.getHours() !== selectedHour || newDate.getMinutes() !== selectedMinute) {
+      newDate.setHours(selectedHour)
       newDate.setMinutes(selectedMinute)
       newDate.setSeconds(0)
       setDate(newDate)
     }
-  }, [selectedHour, selectedMinute, selectedPeriod, setDate])
+  }, [selectedHour, selectedMinute, setDate, date])
 
   // Create minutes options (00, 05, 10, ..., 55)
   const minuteOptions = Array.from({ length: 12 }, (_, i) => i * 5).map((minute) => ({
@@ -68,14 +55,14 @@ export function TimePicker({ date, setDate, className }: TimePickerProps) {
     label: minute.toString().padStart(2, "0"),
   }))
 
-  // Create hours options (1, 2, ..., 12)
-  const hourOptions = Array.from({ length: 12 }, (_, i) => i + 1).map((hour) => ({
+  // Create hours options (0, 1, 2, ..., 23)
+  const hourOptions = Array.from({ length: 24 }, (_, i) => i).map((hour) => ({
     value: hour,
-    label: hour.toString(),
+    label: hour.toString().padStart(2, "0"),
   }))
 
-  // Format the time for display
-  const formattedTime = date ? format(date, "h:mm a") : "Select time"
+  // Format the time for display (24-hour format)
+  const formattedTime = date ? format(date, "HH:mm") : "Select time"
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -130,20 +117,6 @@ export function TimePicker({ date, setDate, className }: TimePickerProps) {
                         {minute.label}
                       </SelectItem>
                     ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid gap-1">
-                <Label htmlFor="period" className="text-xs">
-                  Period
-                </Label>
-                <Select value={selectedPeriod} onValueChange={(value) => setSelectedPeriod(value as "AM" | "PM")}>
-                  <SelectTrigger id="period" className="w-[70px]">
-                    <SelectValue placeholder="AM/PM" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="AM">AM</SelectItem>
-                    <SelectItem value="PM">PM</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

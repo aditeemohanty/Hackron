@@ -22,10 +22,10 @@ import {
 const chartData = [
   { month: "January", desktop: 120 },
   { month: "February", desktop: 125 },
-  { month: "March", desktop: 130 },
-  { month: "April", desktop: 135 },
-  { month: "May", desktop: 140 },
-  { month: "June", desktop: 145 },
+  { month: "March", desktop: 100 },
+  { month: "April", desktop: 250 },
+  { month: "May", desktop: 170 },
+  { month: "June", desktop: 200 },
 ]
 
 const chartConfig = {
@@ -37,13 +37,13 @@ const chartConfig = {
 
 export function Chart() {
   return (
-    <Card>
+    <Card className="bg-amber-50">
       <CardHeader>
-        <CardTitle>Price Trend</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle className="text-amber-600">Price Trend</CardTitle>
+        <CardDescription className="text-yellow-600">January - June 2024</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
+      <CardContent className="">
+        <ChartContainer config={chartConfig} className="h-52 min-w-full ">
           <LineChart
             accessibilityLayer
             data={chartData}
@@ -51,6 +51,7 @@ export function Chart() {
               left: 12,
               right: 12,
             }}
+            className=""
           >
             <CartesianGrid vertical={false} />
             <XAxis
@@ -67,7 +68,7 @@ export function Chart() {
             <Line
               dataKey="desktop"
               type="natural"
-              stroke="black" // Changed stroke color to black
+              stroke="green" // Changed stroke color to black
               strokeWidth={2}
               dot={false}
             />

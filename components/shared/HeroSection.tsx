@@ -1,60 +1,115 @@
 "use client";
 
-import { useState } from "react";
 import { Chart } from "./linechart";
+import useStore from "@/app/store"; // Import the Zustand store
 
 const HeroSection = () => {
-  const [customPrice, setCustomPrice] = useState("");
-  const [displayPrice, setDisplayPrice] = useState(null);
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      setDisplayPrice(customPrice);
-    }
-  };
+  // Get state and actions from the store
+  const { competitorPrice, ourPrice, suggestedPrice, comparison, productWeight, stockLeft } = useStore();
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-10">
-      <div className="grid grid-cols-3 gap-8">
-        {/* First Grid: Label as Past Price */}
-        <div className="col-span-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+    <div className="w-full p-10 flex flex-col gap-8 overflow-hidden bg-slate-50"> {/* Prevent overflow */}
+      {/* First Row: Price Boxes */}
+      <div className="flex flex-col md:flex-row gap-8 items-center">
+        {/* Past Price Box */}
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
           <p className="text-xl text-gray-700 text-center">Past Price</p>
           <p className="text-2xl font-bold text-black text-center">₹120</p>
         </div>
 
-        {/* Second Grid: Suggested Price */}
-        <div className="col-span-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
-          <p className="text-xl text-gray-700 text-center">Suggested Price</p>
-          <p className="text-2xl font-bold text-black text-center">₹140</p>
+        {/* Suggested Price Box */}
+        <div className="flex-1 p-6 border-2 border-yellow-500 rounded-lg bg-white shadow-md shadow-amber-200 hover:shadow-lg transition-all duration-300">
+          <div className="flex gap-1 justify-center">
+            <p className="text-xl text-gray-700 text-center">Suggested</p>
+            <p className="text-xl text-center text-green-700 font-extrabold">Price</p>
+          </div>
+          <p className="text-2xl font-bold text-black text-center">₹{suggestedPrice}</p>
         </div>
-
-        {/* Third Grid: Customizable Price Change Option */}
-        <div className="col-span-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
-          <p className="text-xl text-gray-700 text-center">Your Price</p>
-          {displayPrice && <p className="text-2xl font-bold text-black text-center">₹{displayPrice}</p>}
-          <input
-            type="number"
-            className="w-full p-3 mt-4 border-2 border-gray-400 rounded text-black focus:outline-none focus:border-green-500"
-            placeholder="Enter your price"
-            value={customPrice}
-            onChange={(e) => setCustomPrice(e.target.value)}
-            onKeyPress={handleKeyPress}
-          />
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Consumption Time</p>
+          <p className="text-2xl font-bold text-black text-center">Evening</p>
+        </div>
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Competitor Price</p>
+          <p className="text-2xl font-bold text-black text-center">₹{competitorPrice}</p>
+        </div>
+        <div className={`h-min w-min p-6 border-2 border-yellow-500 rounded-lg shadow-md shadow-amber-200 hover:shadow-lg transition-all duration-300 ${comparison.color}`}>
+          <p className="text-2xl font-bold text-center text-white">{comparison.sign}</p>
+        </div>
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Our Price</p>
+          <p className="text-2xl font-bold text-black text-center">₹{ourPrice}</p>
         </div>
       </div>
 
-      {/* Long Horizontal Grid: Product Description */}
-      <div className="col-span-3 mt-10 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+      {/* Second Row: Price Boxes (Duplicate) */}
+      <div className="flex gap-8">
+        {/* Past Price Box */}
+        <div className="w-64 flex flex-col gap-4">
+          <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+            <p className="text-xl text-gray-700 text-center">Rating</p>
+            <div className="flex justify-center items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-yellow-500">
+              <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
+            </svg>
+              <p className="text-2xl font-bold text-black text-center">5</p>
+            </div>
+          </div>
+      
+          {/* Suggested Price Box */}
+          <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+            <p className="text-xl text-gray-700 text-center">Delivery Cost</p>
+            <p className="text-2xl font-bold text-black text-center">₹45</p>
+          </div>
+          
+          <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+            <p className="text-xl text-gray-700 text-center">Product Weight</p>
+            <p className="text-2xl font-bold text-black text-center">{productWeight}</p>
+          </div>
+          <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+            <p className="text-xl text-gray-700 text-center">Expiry Date</p>
+            <p className="text-2xl font-bold text-black text-center">2025-03-30</p>
+          </div>
+        </div>
+          {/* Chart Section */}
+          <div className="p-6 w-full border-2 border-gray-400 rounded-lg bg-amber-100 shadow-md hover:shadow-lg transition-all duration-300">
+            <p className="text-xl text-black text-center mb-4">Price Trend</p>
+            <div className="w-full h-min">
+              <Chart /> {/* Chart component without dummy data */}
+            </div>
+          </div>
+      </div>
+      
+      <div className="flex flex-col md:flex-row gap-8 items-center">
+        {/* Past Price Box */}
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Stock</p>
+          <p className="text-2xl font-bold text-black text-center">{stockLeft}</p>
+        </div>
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Customer Type</p>
+          <p className="text-2xl font-bold text-black text-center">Urban</p>
+        </div>
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Purchasing Frequency</p>
+          <p className="text-2xl font-bold text-black text-center">Monthly</p>
+        </div>
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Discount</p>
+          <p className="text-2xl font-bold text-black text-center">7%</p>
+        </div>
+
+        {/* Suggested Price Box */}
+        <div className="flex-1 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
+          <p className="text-xl text-gray-700 text-center">Fat Content</p>
+          <p className="text-2xl font-bold text-black text-center">NA</p>
+        </div>
+      </div>
+
+      {/* Product Description Box */}
+      <div className="p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
         <p className="text-xl text-gray-700 text-center">Product Description</p>
         <p className="text-2xl text-black text-center">High-quality refined sugar suitable for all your cooking needs.</p>
-      </div>
-
-      {/* Chart Section */}
-      <div className="col-span-3 mt-10 p-6 border-2 border-gray-400 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
-        <p className="text-xl text-gray-700 text-center mb-4">Price Trend</p>
-        <div className="w-full  h-max"> {/* Reduced height for the chart */}
-          <Chart /> {/* Chart component without dummy data */}
-        </div>
       </div>
     </div>
   );

@@ -7,18 +7,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export function SelectWeather() {
+export function SelectWeather({onValueChange}) {
 
   return (
-    <Select>
+    <Select onValueChange={onValueChange}>
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Weather Condition" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="cloudy">Cloudy</SelectItem>
-        <SelectItem value="cold">Cold</SelectItem>
-        <SelectItem value="rainy">Rainy</SelectItem>
-        <SelectItem value="sunny">Sunny</SelectItem>
+        <SelectItem value="Cloudy">Cloudy</SelectItem>
+        <SelectItem value="Cold">Cold</SelectItem>
+        <SelectItem value="Rainy">Rainy</SelectItem>
+        <SelectItem value="Sunny">Sunny</SelectItem>
       </SelectContent>
     </Select>
 

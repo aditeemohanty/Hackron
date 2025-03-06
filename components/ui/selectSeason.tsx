@@ -7,19 +7,19 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-export function SelectSeason() {
+export function SelectSeason({onValueChange}) {
 
   return (
-    <Select>
+    <Select onValueChange={onValueChange}>
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Season" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="diwali">Diwali</SelectItem>
-        <SelectItem value="eid">Eid</SelectItem>
-        <SelectItem value="christmas">Christmas</SelectItem>
-        <SelectItem value="newyear">New Year</SelectItem>
-        <SelectItem value="none">None</SelectItem>
+        <SelectItem value="Diwali">Diwali</SelectItem>
+        <SelectItem value="Eid">Eid</SelectItem>
+        <SelectItem value="Christmas">Christmas</SelectItem>
+        <SelectItem value="New Year">New Year</SelectItem>
+        <SelectItem value="None">None</SelectItem>
       </SelectContent>
     </Select>
 

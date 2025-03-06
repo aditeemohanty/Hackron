@@ -1,8 +1,8 @@
-'use client'
-import { Check, ChevronsUpDown } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+'use client';
+import React, { useState } from 'react';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -10,40 +10,34 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import React from "react"
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
+} from '@/components/ui/popover';
+import useStore from '@/app/store';
 
 export function ComboboxDemoItem() {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [open, setOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [items, setItems] = useState([]);
+  const { fetchItems, fetchItemDetails } = useStore();
+
+  const handleSearch = async (term) => {
+    setSearchTerm(term);
+    if (term.length > 2) {
+      try {
+        const results = await fetchItems(term);
+        setItems(results);
+      } catch (error) {
+        console.error('Error fetching items:', error);
+        setItems([]); // Clear items if there's an error
+      }
+    } else {
+      setItems([]);
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -54,34 +48,37 @@ export function ComboboxDemoItem() {
           aria-expanded={open}
           className="w-full justify-between"
         >
-          {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select Product..."}
+          {searchTerm || 'Select Product...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search product..." />
+          <CommandInput
+            placeholder="Search product..."
+            value={searchTerm}
+            onValueChange={handleSearch}
+          />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No products found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {items.map((item) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
+                  key={item.Item_identifier} // Use a unique field like Item_identifier
+                  value={item.Item_name}
+                  onSelect={() => {
+                    console.log(item.Item_identifier)
+                    fetchItemDetails(item.Item_identifier); // Use the correct unique identifier
+                    setOpen(false);
                   }}
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      'mr-2 h-4 w-4',
+                      searchTerm === item.Item_name ? 'opacity-100' : 'opacity-0'
                     )}
                   />
-                  {framework.label}
+                  {item.Item_name} (ID: {item.Item_identifier})
                 </CommandItem>
               ))}
             </CommandGroup>
@@ -89,5 +86,5 @@ export function ComboboxDemoItem() {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
